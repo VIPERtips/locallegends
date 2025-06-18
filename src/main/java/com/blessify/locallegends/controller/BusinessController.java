@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blessify.locallegends.dto.BusinessDto;
-import com.blessify.locallegends.model.Business;
 import com.blessify.locallegends.model.User;
 import com.blessify.locallegends.response.ApiResponse;
 import com.blessify.locallegends.service.BusinessService;
@@ -121,5 +120,20 @@ public class BusinessController {
 	                .body(new ApiResponse<>(e.getMessage(), false, null));
 		}	
 	}
+	@GetMapping("/search")
+public ResponseEntity<ApiResponse<Page<BusinessDto>>> searchBusinesses(
+	 @RequestParam(required = false) String name,
+ @RequestParam(required = false) String location,
+ @RequestParam(required = false) String category,
+ @RequestParam(defaultValue = "0") int page,
+ @RequestParam(defaultValue = "10") int size) {
+	try {
+		Page<BusinessDto> results = businessService.searchBusinesses(name, location, category, page, size);
+		return ResponseEntity.ok(new ApiResponse<>("Businesses fetched", true, results));
+	} catch (Exception e) {
+	 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	.body(new ApiResponse<>(e.getMessage(), false, null));
+	 }
+}
 	
 }

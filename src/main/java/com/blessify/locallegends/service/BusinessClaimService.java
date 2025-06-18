@@ -1,10 +1,6 @@
 
 package com.blessify.locallegends.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +28,9 @@ public class BusinessClaimService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailSender emailSender;
+
     public BusinessClaimDto createClaim(BusinessClaimDto dto, int businessId, int userId) {
         Business business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new RuntimeException("Business not found!"));
@@ -47,6 +46,7 @@ public class BusinessClaimService {
                 .build();
 
         BusinessClaim savedClaim = businessClaimRepository.save(claim);
+        emailSender.sendAdminNotificationNewClaim(user.getEmail(), business.getName());
 
         return mapToDto(savedClaim);
     }
@@ -65,6 +65,12 @@ public class BusinessClaimService {
         BusinessClaim claim = businessClaimRepository.findById(claimId)
                 .orElseThrow(() -> new RuntimeException("Claim not found!"));
         claim.setStatus(status);
+        
+        if(status == BusinessClaim.Status.APPROVED){
+                emailSender.sendClaimApprovalEmail(claim.getUser().getEmail(), claim.getUser().getUsername(), claim.getBusiness().getName());
+        } else if(status == BusinessClaim.Status.REJECTED){
+        emailSender.sendClaimRejectionEmail(claim.getUser().getEmail(), claim.getUser().getUsername(), claim.getBusiness().getName(), "");
+        }
         businessClaimRepository.save(claim);
     }
     

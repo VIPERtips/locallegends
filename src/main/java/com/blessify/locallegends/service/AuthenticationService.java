@@ -59,8 +59,8 @@ public class AuthenticationService {
 
         userRepository.save(user);
 
-       emailSender.sendRegistrationSuccessEmail(user.getEmail(),user.getName());
-       emailSender.sendAdminNotification(user.getEmail());
+       emailSender.sendWelcomeEmail(user.getEmail(),user.getName());
+       emailSender.sendAdminNotification(user.getEmail(),user.getName());
 
         String token = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

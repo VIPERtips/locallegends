@@ -27,6 +27,9 @@ public class ReviewService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private EmailSender emailSender;
 	
 	public CompletableFuture<ReviewDto> addReview(ReviewDto req, int userId, int businessId){
 		return CompletableFuture.supplyAsync(()-> {
@@ -50,6 +53,8 @@ public class ReviewService {
 					.orElse(0.0);
 			business.setAverageRating((int) avgRating);
 			businessRepository.save(business);
+
+			emailSender.sendNewReviewEmail(business.getUser().getEmail(), business.getName(), user.getUsername(), req.getRating(), req.getComment());
 			
 			return ReviewDto.builder()
 					.comment(review.getComment())
@@ -88,5 +93,6 @@ public class ReviewService {
 		}
 		reviewRepository.deleteById(reviewId);
 	}
+
 
 }

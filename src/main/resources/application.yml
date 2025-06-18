@@ -2,9 +2,9 @@ spring:
   application:
     name: LocalLegends
   datasource:
-    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT}/${DATABASE_NAME}?allowPublicKeyRetrieval=true&useSSL=false
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:locallegends_db}?allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DATABASE_USER:root}
+    password: ${DATABASE_PASSWORD:youngtips}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -15,8 +15,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:mytipstadiwa@gmail.com}
+    password: iavc nrdt jdin kjyu
     properties:
       mail:
         smtp:
@@ -36,3 +36,4 @@ logging:
         security.authentication: DEBUG
         security.web.authentication: DEBUG
 
+jwt_secret_key: 34a85e67537e305ee95910f1df8c0435c33e1c04b226931dad8bd4b1d6dc68b1

@@ -112,7 +112,7 @@ public class BusinessService {
 				.build();
 	}
 	
-	public Page<BusinessDto> getTopRatedBusinesses(int page, int size) {
+	/*public Page<BusinessDto> getTopRatedBusinesses(int page, int size) {
 	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageRating"));
 	    return businessRepository.findAll(pageable)
 	            .map(this::mapToDto);
@@ -121,7 +121,24 @@ public class BusinessService {
 	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageRating"));
 	    return businessRepository.findByCategory(category, pageable)
 	            .map(this::mapToDto);
-	}
+	}*/
+
+	public Page<BusinessDto> getTopRatedBusinesses(int page, int size) {  Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageRating"));
+	 return businessRepository.findTopRatedBusinesses(3.0, pageable)
+	 	.map(this::mapToDto);
+	} 
+	public Page<BusinessDto> getTopRatedBusinessesByCategory(String category, int page, int size) { 	
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageRating"));return businessRepository.findTopRatedBusinessesByCategory(category, 3.0, pageable)
+		.map(this::mapToDto); 
+	} 
+
+
+
+	public Page<BusinessDto> searchBusinesses(String name, String location, String category, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+		Page<Business> results = businessRepository.findByNameContainingIgnoreCaseAndLocationContainingIgnoreCaseAndCategoryContainingIgnoreCase(name == null ? "" : name,location == null ? "" : location,category == null ? "" : category,pageable);
+		return results.map(this::mapToDto);
+}
 
 
 }

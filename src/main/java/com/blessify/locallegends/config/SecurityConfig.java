@@ -35,13 +35,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) 
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
                     corsConfig.setAllowedOrigins(Arrays.asList(
                             "http://localhost:8081",
-                            
-                           "http://localhost:8080"
+
+                            "http://localhost:8080"
                     ));
                     corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                     corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
@@ -51,14 +51,14 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**","/static/**","/index.html","/api/public/**","/health","/api/reviews/{businessId}").permitAll()
-                        .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/auth/**", "/static/**", "/index.html", "/api/public/**", "/health", "/api/reviews/{businessId}").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/error").permitAll()
+
+                                .anyRequest().authenticated()
                 )
-                .formLogin().disable() 
-                .httpBasic().disable() 
+                .formLogin(login -> login.disable())
+                .httpBasic(basic -> basic.disable())
                 .userDetailsService(userDetailsImpl)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
